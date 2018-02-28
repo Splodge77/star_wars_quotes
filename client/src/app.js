@@ -9,12 +9,16 @@ const appStart = function(){
 
   const createQuoteButton = document.querySelector('#submit-quote');
   createQuoteButton.addEventListener('click', createButtonClicked);
+
+  const createDeleteButton = document.querySelector('#delete-button');
+  createDeleteButton.addEventListener('click', deleteButtonClicked);
 };
 
 const getQuotesRequestComplete = function(allQuotes){
+  console.log(allQuotes);
   allQuotes.forEach(function(quote) {
-     quoteView.addQuote(quote);
-   });
+    quoteView.addQuote(quote);
+  });
 };
 
 const createButtonClicked = function(event) {
@@ -25,13 +29,26 @@ const createButtonClicked = function(event) {
   const quoteInputValue = document.querySelector('#quote').value;
 
   const quoteToSend = {
-   name: nameInputValue,
-   quote: quoteInputValue
-};
+    name: nameInputValue,
+    quote: quoteInputValue
+  };
+  request.post(createRequestComplete, quoteToSend);
+}
 
 const createRequestComplete = function(newQuote) {
-  console.log(newQuote);
+  quoteView.addQuote(newQuote);
 };
 
-request.post(createRequestComplete, quoteToSend);
+const deleteButtonClicked = function(event) {
+  event.preventDefault();
+  console.log('delete button clicked');
+  request.post(deleteRequestComplete)
+};
+
+const deleteRequestComplete = function(){
+  quoteView.clear();
+}
+
+
+
 document.addEventListener('DOMContentLoaded', appStart);

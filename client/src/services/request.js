@@ -14,12 +14,13 @@ Request.prototype.get = function(callback) {
 
     callback(responseBody);
   });
-request.send(JSON.stringify(quoteToSend));
+  request.send();
 };
 
-Request.prototype.post = function(callback, body) {
+Request.prototype.post = function(callback, quoteToSend) {
   const request = new XMLHttpRequest();
   request.open('POST', this.url);
+  request.setRequestHeader('Content-Type', 'application/json');
   request.addEventListener('load', function() {
     if(this.status !== 201) {
       return;
@@ -29,6 +30,20 @@ Request.prototype.post = function(callback, body) {
 
     callback(responseBody);
   });
+  request.send(JSON.stringify(quoteToSend));
 }
+
+// Request.prototype.delete = function(callback) {
+//   const request = new XMLHttpRequest();
+//   request.open('DELETE', this.url);
+//   request.addEventListener('load', function(){
+//     if(this.status !== 201){
+//       return:
+//     }
+//     const responseBody = JSON.parse(this.responseText);
+//     callback(responseBody);
+//   });
+//   request.send()
+// }
 
 module.exports = Request;

@@ -66,14 +66,152 @@
 /******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 2:
+/******/ ([
+/* 0 */
 /***/ (function(module, exports) {
 
-throw new Error("Module parse failed: /Users/user/code_clan_work/JavaScript/mongo/quotes/mongodb_quotes_start/client/src/app.js Unexpected token (38:0)\nYou may need an appropriate loader to handle this file type.\n| request.post(createRequestComplete, quoteToSend);\n| document.addEventListener('DOMContentLoaded', appStart);\n| ");
+const Request = function(url) {
+  this.url = url;
+}
+
+Request.prototype.get = function(callback) {
+  const request = new XMLHttpRequest();
+  request.open('GET', this.url);
+  request.addEventListener('load', function() {
+    if(this.status !== 200) {
+      return;
+    }
+
+    const responseBody = JSON.parse(this.responseText);
+
+    callback(responseBody);
+  });
+  request.send();
+};
+
+Request.prototype.post = function(callback, quoteToSend) {
+  const request = new XMLHttpRequest();
+  request.open('POST', this.url);
+  request.setRequestHeader('Content-Type', 'application/json');
+  request.addEventListener('load', function() {
+    if(this.status !== 201) {
+      return;
+    }
+
+    const responseBody = JSON.parse(this.responseText);
+
+    callback(responseBody);
+  });
+  request.send(JSON.stringify(quoteToSend));
+}
+
+// Request.prototype.delete = function(callback) {
+//   const request = new XMLHttpRequest();
+//   request.open('DELETE', this.url);
+//   request.addEventListener('load', function(){
+//     if(this.status !== 201){
+//       return:
+//     }
+//     const responseBody = JSON.parse(this.responseText);
+//     callback(responseBody);
+//   });
+//   request.send()
+// }
+
+module.exports = Request;
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+var QuoteView = function(){
+  this.quotes = [];
+}
+
+QuoteView.prototype.addQuote = function(quote) {
+  this.quotes.push(quote);
+  this.render(quote);
+}
+
+QuoteView.prototype.clear = function(quote) {
+  this.quotes = [];
+  const ul = document.querySelector('#quotes');
+  ul.innerHTML = '';
+}
+
+QuoteView.prototype.render = function(quote){
+    const ul = document.querySelector('#quotes');
+    const li = document.createElement('li');
+    const text = document.createElement('p');
+    text.innerText = `${quote.name} - "${quote.quote}"`;
+    li.appendChild(text);
+    ul.appendChild(li);
+}
+
+ module.exports = QuoteView;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const QuoteView = __webpack_require__(1);
+const Request = __webpack_require__(0);
+
+const quoteView = new QuoteView();
+const request = new Request('http://localhost:3000/api/quotes');
+
+const appStart = function(){
+  request.get(getQuotesRequestComplete);
+
+  const createQuoteButton = document.querySelector('#submit-quote');
+  createQuoteButton.addEventListener('click', createButtonClicked);
+
+  const createDeleteButton = document.querySelector('#delete-button');
+  createDeleteButton.addEventListener('click', deleteButtonClicked);
+};
+
+const getQuotesRequestComplete = function(allQuotes){
+  console.log(allQuotes);
+  allQuotes.forEach(function(quote) {
+    quoteView.addQuote(quote);
+  });
+};
+
+const createButtonClicked = function(event) {
+  event.preventDefault();
+  console.log('form submit clicked');
+
+  const nameInputValue = document.querySelector('#name').value;
+  const quoteInputValue = document.querySelector('#quote').value;
+
+  const quoteToSend = {
+    name: nameInputValue,
+    quote: quoteInputValue
+  };
+  request.post(createRequestComplete, quoteToSend);
+}
+
+const createRequestComplete = function(newQuote) {
+  quoteView.addQuote(newQuote);
+};
+
+const deleteButtonClicked = function(event) {
+  event.preventDefault();
+  console.log('delete button clicked');
+  request.post(deleteRequestComplete)
+};
+
+const deleteRequestComplete = function(){
+  quoteView.clear();
+}
+
+
+
+document.addEventListener('DOMContentLoaded', appStart);
+
 
 /***/ })
-
-/******/ });
+/******/ ]);
 //# sourceMappingURL=bundle.js.map
