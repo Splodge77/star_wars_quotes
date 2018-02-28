@@ -10,7 +10,7 @@ const appStart = function(){
   const createQuoteButton = document.querySelector('#submit-quote');
   createQuoteButton.addEventListener('click', createButtonClicked);
 
-  const createDeleteButton = document.querySelector('#delete-button');
+  const createDeleteButton = document.querySelector('#deleteButton');
   createDeleteButton.addEventListener('click', deleteButtonClicked);
 };
 
@@ -40,9 +40,8 @@ const createRequestComplete = function(newQuote) {
 };
 
 const deleteButtonClicked = function(event) {
-  event.preventDefault();
   console.log('delete button clicked');
-  request.post(deleteRequestComplete)
+  request.delete(deleteRequestComplete)
 };
 
 const deleteRequestComplete = function(){

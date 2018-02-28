@@ -33,17 +33,16 @@ Request.prototype.post = function(callback, quoteToSend) {
   request.send(JSON.stringify(quoteToSend));
 }
 
-// Request.prototype.delete = function(callback) {
-//   const request = new XMLHttpRequest();
-//   request.open('DELETE', this.url);
-//   request.addEventListener('load', function(){
-//     if(this.status !== 201){
-//       return:
-//     }
-//     const responseBody = JSON.parse(this.responseText);
-//     callback(responseBody);
-//   });
-//   request.send()
-// }
+Request.prototype.delete = function(callback) {
+  const request = new XMLHttpRequest();
+  request.open('DELETE', this.url);
+  request.addEventListener('load', function(){
+    if(this.status !== 204){
+      return;
+    }
+    callback();
+  });
+  request.send()
+}
 
 module.exports = Request;

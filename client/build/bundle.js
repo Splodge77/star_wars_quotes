@@ -105,18 +105,17 @@ Request.prototype.post = function(callback, quoteToSend) {
   request.send(JSON.stringify(quoteToSend));
 }
 
-// Request.prototype.delete = function(callback) {
-//   const request = new XMLHttpRequest();
-//   request.open('DELETE', this.url);
-//   request.addEventListener('load', function(){
-//     if(this.status !== 201){
-//       return:
-//     }
-//     const responseBody = JSON.parse(this.responseText);
-//     callback(responseBody);
-//   });
-//   request.send()
-// }
+Request.prototype.delete = function(callback) {
+  const request = new XMLHttpRequest();
+  request.open('DELETE', this.url);
+  request.addEventListener('load', function(){
+    if(this.status !== 204){
+      return;
+    }
+    callback();
+  });
+  request.send()
+}
 
 module.exports = Request;
 
@@ -168,7 +167,7 @@ const appStart = function(){
   const createQuoteButton = document.querySelector('#submit-quote');
   createQuoteButton.addEventListener('click', createButtonClicked);
 
-  const createDeleteButton = document.querySelector('#delete-button');
+  const createDeleteButton = document.querySelector('#deleteButton');
   createDeleteButton.addEventListener('click', deleteButtonClicked);
 };
 
@@ -198,9 +197,8 @@ const createRequestComplete = function(newQuote) {
 };
 
 const deleteButtonClicked = function(event) {
-  event.preventDefault();
   console.log('delete button clicked');
-  request.post(deleteRequestComplete)
+  request.delete(deleteRequestComplete)
 };
 
 const deleteRequestComplete = function(){
